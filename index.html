@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bus schedule</title>
+    <script src="react.development.js"></script>
+    <script src="react-dom.development.js"></script>
+    <script src="babel.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div id="root"></div>
+	 <script type="text/babel">
+
+	const REGIM = {
+			S: 'Main',
+			C: 'Schedule'
+			};
+			
+	const Data_Companies  = [
+		{id:1,  line: '1', vehId: 'BV66VJL'}, 
+		{id:2,  line: '2', vehId: 'LK17AFX'},
+		{id:3,  line: '3', vehId: 'LTZ1701'},
+		{id:4,  line: '4', vehId: 'LK17DFA'},
+		{id:5,  line: '5', vehId: 'LTZ2125'},
+		{id:6,  line: '6', vehId: 'LK17DBY'},
+		{id:7,  line: '7', vehId: 'LK17DFU'},
+		{id:8,  line: '8', vehId: 'LTZ1262'},
+		{id:9,  line: '9', vehId: 'LTZ1155'},
+		{id:11,  line: '11', vehId: 'LTZ1478'},
+		{id:12,  line: '12', vehId: 'LTZ1444'},
+		{id:13,  line: '13', vehId: 'LJ17WRK'},
+		{id:14,  line: '14', vehId: 'YY66OZK'},
+		{id:15,  line: '15', vehId: 'LTZ1404'},
+		{id:16,  line: '16', vehId: 'LTZ1557'},
+		{id:17,  line: '17', vehId: 'LK17DFE'},
+		{id:18,  line: '18', vehId: 'BF67GKV'},
+		{id:19,  line: '19', vehId: 'LF67EVK'},
+		{id:20,  line: '20', vehId: 'YX19ORS'},
+		{id:21,  line: '21', vehId: 'LTZ1858'},
+		{id:23,  line: '23', vehId: 'SN12AUA'},
+		{id:24,  line: '24', vehId: 'LTZ1749'},
+		{id:25,  line: '25', vehId: 'SN68AFT'},
+		{id:26,  line: '26', vehId: 'SN66WRU'},
+		{id:27,  line: '27', vehId: 'LTZ1072'},
+		{id:28,  line: '28', vehId: 'BF62UYA'},
+		{id:29,  line: '29', vehId: 'LJ13FBX'},
+		{id:30,  line: '30', vehId: 'LK18AHO'},
+		{id:31,  line: '31', vehId: 'LK62DSV'},
+		{id:32,  line: '32', vehId: 'LK61BJV'},
+		{id:33,  line: '33', vehId: 'YX60CAU'},
+		{id:34,  line: '34', vehId: 'LK64EJF'},
+		{id:35,  line: '35', vehId: 'YX16OBU'},
+		{id:36,  line: '36', vehId: 'SN18KMA'},
+		{id:37,  line: '37', vehId: 'YX12FPO'},
+		{id:38,  line: '38', vehId: 'LTZ1006'},
+		{id:39,  line: '39', vehId: 'SK66HSO'},
+		{id:41,  line: '41', vehId: 'LF67EVG'},
+		{id:43,  line: '43', vehId: 'LK14FBX'},
+		{id:44,  line: '44', vehId: 'SN18XZU'},
+		{id:45,  line: '45', vehId: 'YY67GZT'},
+		{id:46,  line: '46', vehId: 'LJ18FHX'},
+		{id:47,  line: '47', vehId: 'SN14TVZ'},
+		{id:48,  line: '48', vehId: 'LTZ1317'},
+		{id:49,  line: '49', vehId: 'SN64OET'},
+		{id:50,  line: '50', vehId: 'LT63UJK'}];
+		
+	const SpecList = (props) =>{
+		let onSpecChange =(e)=>{props.getVal(e.currentTarget.value);};
+		let tmp = props.data.map((item, index)=>{return <option key={item.line} value={item.vehId}>{item.line}</option>});
+		return <select onChange={onSpecChange}> {tmp} </select>;
+	};
+
+	class App extends React.Component{
+		state = {Regim: REGIM.S}
+		changeRegim = (r) => {this.state.Regim != r?this.setState({Regim: r}):null;};
+		render(){
+				console.log('App', this.state.Regim);
+				return(
+					<div>
+					<Navigation changeRegim = {this.changeRegim} />
+					<Panel Regim = {this.state.Regim} />
+					</div>
+					);
+			}
+	};
+
+	class Panel extends React.Component {
+		render(){
+				return <div>
+						{(this.props.Regim == REGIM.C) && <ButtonSchedule />}
+						{(this.props.Regim == REGIM.S) && <WelcomeClass />}
+					</div>;
+		};
+	};
+
+	const Navigation = (props) => {				
+
+			const obc = (e) => {
+				props.changeRegim(REGIM[e.target.id]);
+				[...document.querySelectorAll(".Navigation .activebuttom")].map((e)=>{e.className ='passivebutton'});	
+			};
+
+			return <div class="container">
+						<ul class="nav">
+							<li><a id="S" onClick={obc}>Main</a></li>
+							<li><a id="C" onClick={obc}>Schedule Transport</a></li>
+						</ul>
+				</div>;
+		};
+		
+	class WelcomeClass extends React.Component{	
+		render() {
+			return (
+				<div>
+					<h2>Welcome!</h2>
+					<h3>Bus schedule</h3>
+				</div>
+			);
+		}
+	};
+		
+	class ButtonSchedule extends React.Component{	
+		state = {flagadd: false};
+		constructor(props) {
+        super(props);
+        this.state = {
+            user: {}
+        }
+		}
+
+		getUserById(id) {
+			console.log('getUserById');
+			fetch(`https://api.tfl.gov.uk/Vehicle/${id}/Arrivals`)
+				.then( (response) => {
+					return response.json()
+				})
+				.then( (json) => {
+					this.setState({
+					user: json
+				})
+				});
+		}
+		
+		getVal = (val) => {this.setState({flagadd: true}); this.getUserById(val);};
+
+		render() {
+			console.log(this.state.user);
+			let tmp = null;
+			var dateNow = null;
+			var date = null;
+			if(Array.isArray(this.state.user)){
+				dateNow = new Date();
+				tmp = this.state.user.map((item, index)=><button key={item.stationName} id={item.stationName} class="buttonInfo"> {item.lineName} -  {item.stationName} - {item.expectedArrival} </button>);
+			}
+			return (
+				<div>
+					<h1>Bus on line <SpecList getVal={this.getVal} data={Data_Companies} /></h1>
+					<p class="CenterInfo">{this.state.flagadd&&tmp}</p>
+				</div>
+			);
+		}
+	};
+
+		ReactDOM.render(<div>
+				<App />
+				</div>,
+			document.getElementById('root'));
+    </script>
+
+  </body>
+</html>
+
